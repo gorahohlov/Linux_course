@@ -1,0 +1,38 @@
+user@gorah:~$ pwd
+/home/user
+user@gorah:~$ cd /
+user@gorah:/$ cd ~
+user@gorah:~$ cd ../
+user@gorah:/home$ cd user/dir1
+user@gorah:~/dir1$ cd ../.cache
+user@gorah:~/.cache$ cd ../.config
+user@gorah:~/.config$ cd ../..
+user@gorah:/home$ pwd
+/home
+user@gorah:/home$ cd user/dir1
+user@gorah:~/dir1$ cd ../.cache
+user@gorah:~/.cache$ cd ../.config
+user@gorah:~/.config$ cd ../..
+user@gorah:/home$ cd /
+user@gorah:/$ cd /tmp
+user@gorah:/tmp$
+user@gorah:/tmp$ cd ~
+user@gorah:~$ cd dir1
+user@gorah:~/dir1$ ls
+gorah.txt
+user@gorah:~/dir1$ ls -la
+total 16
+drwxrwxr-x 2 user user 4096 May 30 21:01 .
+drwxr-xr-x 6 user user 4096 May 30 22:12 ..
+-rw-rw-r-- 1 user user   34 May 28 21:11 .bash_profile
+-rw-rw-r-- 1 user user  211 May 28 17:58 gorah.txt
+user@gorah:~/dir1$
+--------
+быстро вернуться в домашний каталог:
+cd [без параметров]
+cd ~
+--------
+перейти на уровень выше:
+cd ../
+на два уровня выше:
+cd ../..

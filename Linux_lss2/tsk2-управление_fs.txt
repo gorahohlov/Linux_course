@@ -1,0 +1,31 @@
+user@gorah:~$ touch bsh_cnfg
+user@gorah:~$ ls -la
+user@gorah:~$ vim bsh_cnfg
+user@gorah:~$ mv bsh_cnfg plain_text_file
+user@gorah:~$ vim plain_text_file
+user@gorah:~$ nano plain_text_file
+user@gorah:~$ echo 'используем перенаправление потока вывода в файл'> ~/plain_text_file
+user@gorah:~$ vim plain_text_file
+user@gorah:~$ echo 'вот только получилось "затереть" всё что там писал туда до этого'> ~/plain_text_file
+user@gorah:~$ mkdir dir1/dir2
+user@gorah:~/dir1$ cd dir2
+user@gorah:~/dir1/dir2$ mkdir dir3 dir4
+user@gorah:~/dir1/dir2$ cd dir3
+user@gorah:~/dir1/dir2/dir3$ ls -la
+user@gorah:~/dir1/dir2/dir3$
+user@gorah:~/dir1/dir2/dir3$ cp ~/plain_text_file ../dir4
+user@gorah:~/dir1/dir2/dir3$ cd ../dir4
+user@gorah:~/dir1/dir2/dir4$ ls -l
+-rw-rw-r-- 1 user user 108 May 30 23:20 plain_text_file
+user@gorah:~/dir1/dir2/dir4$
+user@gorah:~$ cp 'lorem ipsum' dir1/dir2/dir4
+user@gorah:~$ cd ./dir1/dir2/dir4
+user@gorah:~/dir1/dir2/dir4$ ls -la
+drwxrwxr-x 2 user user 4096 May 30 23:27  .
+drwxrwxr-x 4 user user 4096 May 30 23:16  ..
+-rw-rw-r-- 1 user user 1368 May 30 23:27 'lorem ipsum'
+-rw-rw-r-- 1 user user  108 May 30 23:20  plain_text_file
+user@gorah:~/dir1/dir2/dir4$ mv 'lorem ipsum' lorem_ipsum
+user@gorah:~/dir1/dir2/dir4$ cp lorem_ipsum lorem_ipsum1
+user@gorah:~/dir1/dir2/dir4$ cd ~
+user@gorah:~$ rm ./dir1/dir2/dir4/lorem_ipsum1
