@@ -1,0 +1,29 @@
+1a.
+sudo useradd -s /bin/bash -m user1
+sudo adduser user2
+sudo useradd -p 123 -s /bin/sh -m user3
+1b.
+sudo userdel -r user2
+2a.
+sudo groupadd crew1
+sudo addgroup crew2
+2b.
+sudo usermod -g crew2 user1
+sudo usermod -g user1 user3
+2c.
+sudo usermod -aG crew1 user1
+sudo usermod -aG sudo user1
+sudo usermod -aG sudo user3
+sudo usermod -aG user3 user1
+2d.
+sudo gpasswd -d user3 sudo
+sudo deluser user1 sudo
+3.
+sudo usermod -aG sudo user3
+user3 ALL=(ALL) NOPASSWD: /usr/bin/sudo
+%user3 gorah=(user1) NOPASSWD: /usr/bin/apt, /sbin/reboot
+4.
+%user3 gorah=(user1) NOPASSWD: /user/bin/apt, /sbin/reboot, /usr/bin/passwd
+sudo useradd -s /bin/bash -m user4
+user4 gorah=(ALL) /usr/bin/passwd, /usr/sbin/useradd, /usr/sbin/userdel
+user4 gorah=(ALL) NOPASSWD: /usr/bin/passwd, /usr/sbin/useradd, /usr/sbin/userdel
