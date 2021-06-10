@@ -44,12 +44,12 @@ sudo useradd -G developer devel_3
 cat /etc/group | grep devel
 mkdir dir_devel
 sudo chown user:developer ./lss5/dir_devel
-# sudo chgrp developer ~/lss5/dir_devel
 sudo chmod g+s ~/lss5/dir_devel
 ls -l ./lss5
 sudo passwd devel_1
 sudo passwd devel_2
 sudo passwd devel_3
+# для того чтобы проверить работает ли корректно и переключаться на этих новых пользователей, выполнять от их имени команды потребовалось добавить им пароли.
 sudo usermod -d ~/lss5/dir_devel devel_1
 sudo usermod -d ~/lss5/dir_devel devel_2
 sudo usermod -d ~/lss5/dir_devel devel_3
@@ -61,10 +61,50 @@ ls -l ~/lss5/dir_devel
 su devel_1
 vim ~/lss5/dir_devel/file_2
 # не сработало! пользователь devel_1 не может сохранять изменения файлой пользователя devel_2!
-can't open file for writing.
+# can't open file for writing.
+# Сработало! разобрался, ошибка возникала при редактировании файлов созданных до установки флага sgid, которые не унаследовали группу владельца developer; у таких файлов был установлена группа владельцев тех кто их создал.
+su devel_1 -c 'touch file1'
+su devel_2 -c 'touch file2'
+su de
+vim file2
+cat file1
+su devel_2
+echo 'halygalyparatrooper' > file1
+cat file1
+# everything is okey! working correctly.
 5.
-mkdir ~/lss5/dir_devel/dir_devel_2
-chmod +t ~/lss5/dir_devel/dir_devel_2
-ls -l ~/lss5/dir_devel
+mkdir ~/lss5/dir_devel/dir_dev2
+chmod +t ~/lss5/dir_devel/dir_dev2
+ls -l ~/lss5/dir_devel/dir_dev2
+cd ~/lss5/dir_devel/dir_dev2
+su devel_1 -c 'touch file1'
+su devel_2 -c 'touch file2'
+su devel_1 -c 'rm file2'
+#rm: cannot remove 'file2':Operation not permitted
+su devel_1 -c 'rm file1'
+#Done
 6.
-ниасилил(( посмотрел в разборе урока 6!
+#доработал
+cd ~/lss5/dir_devel/dir_dev2
+echo 'aaaaaaaa' > file_u2
+su devel_1 -c 'touch file_12'
+su devel_2 -c 'touch file_22'
+chmod u-r ../dir_dev2
+ls -l
+#ls: cannot open directory 'dir_dev2': Permission denied
+su devel_1 -c 'ls -l dir_dev2'
+# корректный вывод
+echo 'aaaaaaa' > dir_dev2/file_u2
+cat file_u2
+# aaaaaaa
+chmod g-r dir_dev2
+su devel_1 -c 'ls -l'
+#ls: cannot open directory: Permission denied
+su devel_1 -c 'cat file_u2'
+# aaaaaaa
+cd ..
+ls -l
+#d-ws-wxr-t 2 user developer 4096 Jun 10 18:34 dir_dev2
+# Право на чтение означает для каталога право на получение списка имён
+# Если отсутствует право на чтение, то становится невозможно узнать имена файлов в каталоге.
+# Однако, если имя известно из других источников, то доступ к файлу можно получить стандартным образом.
