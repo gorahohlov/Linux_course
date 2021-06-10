@@ -68,4 +68,3 @@ chmod +t ~/lss5/dir_devel/dir_devel_2
 ls -l ~/lss5/dir_devel
 6.
 ниасилил(( посмотрел в разборе урока 6!
-
