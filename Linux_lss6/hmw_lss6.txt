@@ -31,5 +31,93 @@ chmod 775 tst_1.sh
 tsk_1.sh
 
 2.
+# создать кучу каталогов
+mkdir -p ~/20{10..17}/dir{01..12}
+# создать в них файлы:
+touch ~/20{10..17/dir{01..12}/{001..006}.txt
+# создать строку
+echo 'File '{001..006}
+# осталось слепить это в одну команду.
 
-остальные задания не успел. Прошу времени доделать позже.
+# еще ближе подобрался к решению, но не до конца.
+echo 'File '{001..006} | tee ~/20{10..17}/dir{01..12}/{001..006}.txt
+# в каждый файл попадает одна и таже строка echo((
+# соединяю команды с помощью ;
+mkdir -p ~/20{10..17}/dir{01..12}; echo 'File '{001..006} | tee ~/20{10..17}/dir{01..12}/{001..006}.txt > /dev/null
+# так работает - создаются каталоги, подкаталоги, файлы, файлы заполняются; надо придумать какую-нибудь подставновку для имен файлов и текста;
+
+# идем дальше
+for i in {001..006}; do echo 'File '$i > ~/2016/dir06/$i.txt; done
+# работает корреткно для конкретной папки ~/2016/dir06/fir
+
+# после небольшой подгонки получилось.
+
+# итоговый однострочный скрипт:
+mkdir -p ~/20{10..17}/dir{01..12}; touch 201{1..7}/dir{01..12}/{001..006}.txt; for i1 in {2010..2017}; do for i2 in dir{01..12}; do for i in {001..006}; do echo 'File '$i > ~/$i1/$i2/$i.txt; done; done; done
+# проверено, работает корректно.
+
+# теперь тоже самое с помощью скрипта bash
+vim ~/bin/scrp_2.sh
+
+#!/bin/bash
+
+mkdir -p ~/20{10..17}/dir{01..12}
+touch ~/201{1..7}/dir{01..12}/{001..006}.txt
+for i1 in {2010..2017}; do
+    for i2 in dir{01..12}; do
+        for i in {001..006}; do
+            echo 'File '$i > ~/$i1/$i2/$i.txt
+        done
+    done
+done
+
+
+chmod 775 scrp_2.sh
+# chmod ugo+x scrp_2.sh
+scrp_2.sh
+# работает корректно.
+3. 
+ls -l /etc | awk '{print $1}' | sort | uniq | grep '^[dl-]'
+ls -l /etc | awk '{print $1}' | sort | uniq | grep '^[^t]'
+4.
+cat /var/log/syslog | grep apt | less
+cat /var/log/syslog | grep gdb | less
+cat /var/log/syslog | grep update | less
+cat /var/log/syslog | grep 'Jun 15' | less
+5. 
+echo 'sudo reboot' | at 12:14am 06/16/20021
+# warning: commands will be executed using /bin/sh job 1 at Wed Jun 16 00:14:00 2021
+# перезагрузка не случилась.
+
+sudo -i
+echo 'reboot' | at now + 2 minutes
+exit
+# так лучше но мне не нравится использование 'sudo -i'
+
+echo 'reboot' | sudo at now + 1 minutes
+#everything is okey.
+
+6.
+# скрипт
+vim bin/arch_scrp.sh
+#!/bin/bash
+
+zip -r ~/lss6/etc-$(date +'%y%m$d-%H%M').zip /etc >& /dev/null
+echo zip archive has done
+
+tar cf ~/lss6/etc-$(date +%y%m%d-%H%M).tar /etc >& /dev/null
+echo tar archive has done
+
+chmod ugo+x ~/bin/arch_scrp.sh
+
+arch_scrp.sh
+# скрипт работает. проверено.
+
+
+sudo crontab -e
+SHELL=/bin/bash
+PATH=$HOME/bin
+0 3 1-7 * * [ "$(date '+\%u')" -eq 7 ] && $HOME/bin/arch_scrp.sh
+* * * * * [ $(date +\%M) -eq 22 ] && $HOME/bin/arch_scrp.sh
+* * * * * echo 'one minute passed' # >/tmp/echolg.log 2>&1
+задания в crontab не работают. Проверено. Я не смог найти причину, перепробовал разные варианты.
