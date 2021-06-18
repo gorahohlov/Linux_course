@@ -1,0 +1,17 @@
+1.
+echo Hello world! > hw.txt
+ls -l /etc 2> /dev/null | cat -n
+2.
+ls -l /etc | cut -d ' ' -f 1 | sotr | uniq | head -n -1
+3. различие между restart reload: restart завершает процесс и заново его запускает;
+reload - не завершает процесс, обеспечивает перечтение конфигурационного файла.
+4. 
+mc &
+ps
+kill -KILL 1265
+или
+kill -9 1265
+или
+kill -SIGKILL %1
+ps
+#вуаля: [1]+ Killed mc
