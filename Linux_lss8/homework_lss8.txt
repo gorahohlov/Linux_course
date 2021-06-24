@@ -1,0 +1,91 @@
+1.
+sudo apt install apt-transport-https ca-certificates curl gnupg-agent software-properties-common -y
+# зависимости установлены успешно
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+# ключ добавлен успешно
+
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+# возникла ошибка "lsb Release не имеет файла релиза", "обновление из этого репозитория не может быть сделано безопасно и поэтому отключено по-дефолту"
+# поэтому возникает ошибка инсталляции docker через этот репозиторий.
+
+# выполнил установку docker штатными средствами командой:
+sudo apt install -y docker docker-compose
+# daemon запущен, активен, тестовый контейнер hello-world запускается корректно.
+
+# теперь перехожу собственно к первому заданию.
+# поиск образа ubuntu
+docker search ubuntu
+# он первый в списке (OFFICIAL:[OK])
+
+# загружаю образ из реестра
+docker pull ubuntu
+# выполнено корретно "Pull complete ... Downloaded newer image for ununtu"
+
+# запускаю контейнер из скаченного образа
+docker run -d --name ubuntu1 ubuntu
+# контейнер успешно создан
+# понимаю что не нужно пробрасывать 80 порт т.к. это порт вебсервера, не уверен нужно ли пробрасывать какие-либо другие порты.
+# пробую пробросить папки
+docker run -d --name ubuntu2 -v /var/cntr_ubu2/:/usr/share/ubu2 ubuntu
+# контейрен успешно создан
+docker ps -a
+# к контейнеру не получается подключиться командой docker exec
+docker exec -ti ubuntu1 bash
+# ошибка
+docker attach ubuntu1
+# ошибка
+# смотрю в чем дело
+docker rm ubuntu1
+# требуется запускать контейнер с запущенным приложением! Иначе он сразу останавливается.
+docker run -it --name ubuntu1 ubuntu /bin/bash
+# вошел в контейнер, приглашение изменилось.
+
+# еще рабочий вариант 
+# удаляю контейнер ubuntu2 созданный ранне в фоне - без запушенного приложения контейнер падает сразу после запуска и поэтому бесплезен.
+docker rm ubuntu2
+# создаю новый контейнер в интерактивном режиме
+docker run -ti --name ubuntu2 -v /var/cntr_ubu2/:/usr/share/ubu2 ubuntu
+# успешно приглашение поменялось, команды в выполняются в новом окружении;
+# сразу после выхода контейнер останавливается
+docker restart ubuntu2
+docker exec -ti ubuntu2 bash
+# ok, работает
+
+docker exec -ti ubuntu1 /bin/bash
+# ok, работает
+
+2.
+mkdir ngi-php-fpm
+cd ngi-php-fpm
+vi Dockerfile
+
+FROM ubuntu:latest
+MAINTAINER gorahohlov
+ENV TZ=Europe/Moscow
+RUN apt update -y
+RUN apt install -y nginx php php-fpm
+RUN echo "daemon off;" >> /etc/nginx/nginx.conf
+RUN mkdir /run/php-fpm
+COPY ./html/ /usr/share/nginx/html/
+CMD php-fpm -D ; nginx
+EXPOSE 80
+
+
+mkdir html
+vi html/index.php
+
+<?php
+phpinfo();
+?>
+# скрипт, который будет выводить информацию о php в браузере для примера. По идее, в данную папку мы должны положить сайт (веб-приложение).
+
+docker build -t ngi-php-img .
+# вот на этом этапе - создания образа все затормозилось. установщик предлагал выбрать географический регион .... и не реагировал на мой ввод
+
+# осталось проверить как создался образ 
+docker images
+# запуск контейнера
+docker run --name cntr_ngi-php -d -p 80:80 ngi-php-img
+
+# если честно смысла от второго задания не вижу - даже если бы все заработало - в голове все равно жижа жидкая. Думаю чтобы разобраться в docker мало прочитать методичку. Нужно браться за книгу и с основ...
